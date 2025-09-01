@@ -1,0 +1,24 @@
+{
+  "name": "divar",
+  "version": "1.0.0",
+  "description": "A simple clone from Divar Site",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amirhb97/Divar.git"
+  },
+  "author": "Amirhossein Habibizadeh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amirhb97/Divar/issues"
+  },
+  "homepage": "https://github.com/amirhb97/Divar#readme",
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "mongoose": "^8.18.0"
+  }
+}
