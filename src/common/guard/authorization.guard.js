@@ -1,0 +1,26 @@
+const createHttpError = require("http-errors");
+const jwt = require('jsonwebtoken');
+const UserModel = require('../../modules/users/user.model');
+const AuthorizationMessage = require('../messages/auth.message');
+const authorization = async (req,res,next)=>{
+    try {
+        
+        const token = req?.cookies?.access_token;
+        if(!token) throw new createHttpError.Unauthorized(AuthorizationMessage.Login);
+        const data = jwt.verify(token,process.env.JWT_SECRET);
+        if(typeof data == 'object' && 'id' in data){
+            const user = await UserModel.findById(data.id,{accessToken:0,otp:0,__v:0,updatedAt:0,verifiedMobile:0})
+                                        .lean();
+            if(!user) throw createHttpError.Unauthorized(AuthorizationMessage.NotFoundAccount);
+            req.user = user;
+            return next();
+        }
+
+        throw new createHttpError.Unauthorized(AuthorizationMessage.Unauthorized);
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+module.exports = authorization;
