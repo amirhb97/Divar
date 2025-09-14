@@ -40,6 +40,18 @@ class CategoryController{
         }
     }
 
+    async deleteCategoryByid(req,res,next){
+        try {
+            const {id} = req.params;
+            await this.#service.deleteCategoryByid(id);
+            res.json({
+                messages : CategoryMessages.DeleteCategorySuccessfuly
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
 }
 
 

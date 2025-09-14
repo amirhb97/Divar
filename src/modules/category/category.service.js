@@ -2,13 +2,16 @@ const createHttpError = require('http-errors');
 const { isValidObjectId, Types } = require('mongoose');
 const { default: slugify } = require('slugify');
 const CategoryModel = require('./category.model');
+const OptionModel = require('../option/option.model');
 const CategoryMessages = require('./category.message');
 
 class CategoryService{
     
     #model;
+    #optionModel;
     constructor(){
         this.#model = CategoryModel;
+        this.#optionModel = OptionModel;
     }
 
     async create(categoryDTO){
@@ -47,6 +50,16 @@ class CategoryService{
 
     }
 
+
+    async deleteCategoryByid(id){
+        
+        if (!isValidObjectId(id)) throw new createHttpError.NotValidObjectId;
+        await this.checkExistById(id);
+        await this.#optionModel.deleteMany({category : id }).then(async ()=>{
+            await this.#model.deleteMany({$or:[{_id:id},{parents : id}]});
+        });
+    }
+
     async checkExistById(id){
         const category = await this.#model.findById(id);
         if(!category) throw new createHttpError.NotFound(CategoryMessages.NotFound);
@@ -61,6 +74,7 @@ class CategoryService{
     async checkExistBySlug(slug){
         const category = await this.#model.findOne({slug});
         if(!category) throw new createHttpError.NotFound(CategoryMessages.NotFound);
+
     }
 
 
